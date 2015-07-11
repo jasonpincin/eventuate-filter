@@ -40,6 +40,6 @@
     "tape": "~4.0.0"
   },
   "dependencies": {
-    "eventuate": "~2.0.0"
+    "eventuate": "~2.1.0"
   }
 }
