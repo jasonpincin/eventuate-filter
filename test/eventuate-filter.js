@@ -12,7 +12,7 @@ test('eventuate filter', function (t) {
     t.ok(only1.hasConsumer !== undefined, 'has hasConsumer')
 
     var eventCount = 0
-    event(function (v) {
+    event(function () {
         eventCount++
     })
 
