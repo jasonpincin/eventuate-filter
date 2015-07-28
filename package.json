@@ -17,8 +17,7 @@
     "emitter",
     "handler",
     "callback",
-    "EventEmitter",
-    "Promise"
+    "EventEmitter"
   ],
   "license": "MIT",
   "bugs": {
