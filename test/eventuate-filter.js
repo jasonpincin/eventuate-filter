@@ -3,6 +3,8 @@ var test      = require('tape'),
     filter    = require('..')
 
 test('eventuate filter', function (t) {
+    t.plan(10)
+
     var event = eventuate()
     var only1 = filter(event, function (v) { return v === 1 })
 
@@ -33,6 +35,4 @@ test('eventuate filter', function (t) {
 
     t.equal(eventCount, 6, 'produce 6 events')
     t.equal(only1Count, 3, 'should filter out non matching events')
-
-    t.end()
 })
