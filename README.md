@@ -43,16 +43,27 @@ pie.produce({type: 'peach' })
 var eventuate = require('eventuate')
 var filter    = require('eventuate-filter')
 
-var event = eventuate()
+var upstreamEventuate = eventuate()
 ```
 
-### var filteredEvent = filter(event, filterFunc)
+### var filteredEventuate = filter(upstreamEventuate, filterFunc)
 
-Returns a new eventuate which re-produces events from eventuate `event` for which `filterFunc` returns true. 
-`filterFunc` should have the signature `function (data) { }`. This function receives all event data from `event` 
-and must return a truthy or falsey value.
+Returns a new eventuate which re-produces events from eventuate `upstreamEventuate` for which `filterFunc` returns true.  `filterFunc` should have the signature `function (data) { }`. This function receives all event data from `upstreamEventuate` and must return a truthy or falsey value.
 
-If `event` is an unmonitored eventuate, `filter` will return an unmonitored eventuate.
+If `upstreamEventuate` is an unmonitored eventuate, `filteredEventuate` will return an unmonitored eventuate.
+
+### filteredEventuate.unsubscribe()
+
+Stop consuming events from `upstreamEventuate` (and thus stop producing events). 
+
+### filteredEventuate.upstreamConsumer
+
+The function added as a consumer to the `upstreamEventuate`. Example:
+
+```javascript
+var consumerIdx = upstreamEventuate.consumers.indexOf(filteredEventuate.upstreamConsumer)
+assert(consumerIdx >= 0)
+```
 
 ## testing
 
