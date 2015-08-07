@@ -1,6 +1,6 @@
 {
   "name": "eventuate-filter",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Create filtered eventuate, acting as subset of broader eventuate",
   "main": "index.js",
   "scripts": {
@@ -39,6 +39,5 @@
     "tape": "~4.0.1",
     "eventuate": "~3.1.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
