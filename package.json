@@ -36,9 +36,9 @@
     "opn": "~3.0.2",
     "tap-dot": "~1.0.0",
     "tap-spec": "~4.0.2",
-    "tape": "~4.0.1"
+    "tape": "~4.0.1",
+    "eventuate": "~3.1.0"
   },
   "dependencies": {
-    "eventuate": "~3.0.0"
   }
 }
