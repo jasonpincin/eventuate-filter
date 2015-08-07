@@ -3,12 +3,13 @@ var test      = require('tape'),
     filter    = require('..')
 
 test('eventuate filter', function (t) {
-    t.plan(10)
+    t.plan(11)
 
     var event = eventuate()
     var only1 = filter(event, function (v) { return v === 1 })
 
-    t.equal(only1.produce, undefined, 'has no produce function')
+    t.ok(~event.consumers.indexOf(only1.upstreamConsumer), 'adds consumer to upstream event')
+
     t.ok(only1.consumerAdded, 'has consumerAdded')
     t.ok(only1.consumerRemoved, 'has consumerRemoved')
     t.ok(only1.hasConsumer !== undefined, 'has hasConsumer')
@@ -33,6 +34,13 @@ test('eventuate filter', function (t) {
     event.produce(1)
     event.produce(1)
 
-    t.equal(eventCount, 6, 'produce 6 events')
+    // after unsubscribe, no more events should propogate
+    only1.unsubscribe()
+    t.notOk(~event.consumers.indexOf(only1.upstreamConsumer), 'unsubscribe removes consumer from upstream event')
+    event.produce(1)
+    event.produce(1)
+
+    t.equal(eventCount, 8, 'produce 6 events')
     t.equal(only1Count, 3, 'should filter out non matching events')
+
 })
