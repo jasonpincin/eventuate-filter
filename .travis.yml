@@ -1,9 +1,17 @@
+sudo: false
 language: node_js
 node_js:
-    - "0.10"
-    - "0.12"
+- '0.10'
+- '0.12'
 before_install:
-    - npm install -g npm@'>=2.9.1'
+- npm install -g npm@'>=2.9.1'
 before_script:
-    - npm install -g coveralls@2.10.0
-script: make travis-test
+- npm install -g coveralls@2.10.0
+script:
+- make travis-test
+- '[ "${TRAVIS_NODE_VERSION}" = "0.12" ] && travis_retry travis_wait make browser-test
+  || true'
+env:
+  global:
+  - secure: i749Atiz/0VSIuNPGHvbc6rQOytc7InVGaBrnOHUyIowi3/fgqz8rGSYBvW1SQszZ+aZ7ocu2lQGkyFwfAgpK3Ou3HpYznq9cPGmrOVQGpx3IWOiYpfjg4dGxPNfUaIJ5choeWoHiaV5ukW1Sp2lJBDyhLmVpsGtmk/NoS4H3xs=
+  - secure: Bdpvi1M3ruiT7JS1xhXF6nqrrSdlzsTrXRy0M96IaBx9VypjPP6P/Cg69QvnnardKrbJrkixQ7FWboLXZ4/qE6/bU/UZaGkv3lK06hVRz0GLAXcfmLxjmmSTGUDiDAOA85IhTl8ykyzbP/CHf3B6ZkC2n6im2N+XHwpL3wiryDY=
