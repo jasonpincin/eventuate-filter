@@ -3,7 +3,7 @@
 [![NPM version](https://badge.fury.io/js/eventuate-filter.png)](http://badge.fury.io/js/eventuate-filter)
 [![Build Status](https://travis-ci.org/jasonpincin/eventuate-filter.svg?branch=master)](https://travis-ci.org/jasonpincin/eventuate-filter)
 [![Coverage Status](https://coveralls.io/repos/jasonpincin/eventuate-filter/badge.png?branch=master)](https://coveralls.io/r/jasonpincin/eventuate-filter?branch=master)
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/jp-eventuate-filter.svg)](https://saucelabs.com/u/jp-eventuate-filter)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/jp-project9.svg)](https://saucelabs.com/u/jp-project9)
 
 Create filtered [eventuate](https://github.com/jasonpincin/eventuate), acting as subset of broader eventuate
 
