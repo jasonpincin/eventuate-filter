@@ -1,5 +1,5 @@
 var test      = require('tape'),
-    eventuate = require('eventuate'),
+    eventuate = require('eventuate-core'),
     filter    = require('..')
 
 test('eventuate filter', function (t) {
@@ -8,11 +8,11 @@ test('eventuate filter', function (t) {
     var event = eventuate()
     var only1 = filter(event, function (v) { return v === 1 })
 
-    t.ok(~event.consumers.indexOf(only1.upstreamConsumer), 'adds consumer to upstream event')
+    t.ok(~event.getConsumers().indexOf(only1.upstreamConsumer), 'adds consumer to upstream event')
 
     t.ok(only1.consumerAdded, 'has consumerAdded')
     t.ok(only1.consumerRemoved, 'has consumerRemoved')
-    t.ok(only1.hasConsumer !== undefined, 'has hasConsumer')
+    t.ok(only1.hasConsumer() !== undefined, 'has hasConsumer')
 
     var eventCount = 0
     event(function () {
@@ -25,7 +25,7 @@ test('eventuate filter', function (t) {
         only1Count++
     })
 
-    t.true(only1.hasConsumer, 'registers consumers')
+    t.true(only1.hasConsumer(), 'registers consumers')
 
     event.produce(2)
     event.produce(1)
@@ -36,7 +36,7 @@ test('eventuate filter', function (t) {
 
     // after unsubscribe, no more events should propogate
     only1.unsubscribe()
-    t.notOk(~event.consumers.indexOf(only1.upstreamConsumer), 'unsubscribe removes consumer from upstream event')
+    t.notOk(~event.getConsumers().indexOf(only1.upstreamConsumer), 'unsubscribe removes consumer from upstream event')
     event.produce(1)
     event.produce(1)
 

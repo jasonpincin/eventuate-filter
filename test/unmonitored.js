@@ -1,14 +1,14 @@
-var test      = require('tape'),
-    eventuate = require('eventuate'),
-    filter    = require('..')
+var test           = require('tape'),
+    basicEventuate = require('eventuate-core/basic'),
+    filter         = require('..')
 
-test('unmonitored eventuate filter', function (t) {
+test('basic eventuate filter', function (t) {
     t.plan(3)
 
-    var event = eventuate({ monitorConsumers: false })
+    var event = basicEventuate()
     var only1 = filter(event, function (v) { return v === 1 })
 
     t.equal(only1.consumerAdded, undefined, 'has no consumerAdded')
     t.equal(only1.consumerRemoved, undefined, 'has no consumerRemoved')
-    t.equal(only1.hasConsumer, undefined, 'has no hasConsumer')
+    t.equal(only1.factory, basicEventuate, 'has basic eventuate factory')
 })
