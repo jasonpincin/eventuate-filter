@@ -1,14 +1,19 @@
-module.exports = function mkFilteredEventuate (eventuate, filter) {
-    var filteredEventuate = eventuate.factory({ monitorConsumers: eventuate.hasConsumer !== undefined })
-    filteredEventuate.upstreamConsumer = filterConsumer
-    filteredEventuate.unsubscribe = function filteredEventuateUnsubscribe () {
-        eventuate.removeConsumer(filterConsumer)
-    }
+module.exports = function mkFilteredEventuate (eventuate, options, filter) {
+    filter = arguments.length > 2 ? filter : options
+    options = arguments.length > 2 ? options : undefined
 
-    eventuate(filterConsumer)
+    var filteredEventuate              = eventuate.factory(options)
+    filteredEventuate.upstreamConsumer = filterConsumer
+    filteredEventuate.destroy          = destroy
+    eventuate.consume(filterConsumer)
+
     return filteredEventuate
 
     function filterConsumer (data) {
         if (filter(data)) filteredEventuate.produce(data)
+    }
+
+    function destroy () {
+        eventuate.removeConsumer(filterConsumer)
     }
 }

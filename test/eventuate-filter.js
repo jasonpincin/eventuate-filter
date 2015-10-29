@@ -34,9 +34,9 @@ test('eventuate filter', function (t) {
     event.produce(1)
     event.produce(1)
 
-    // after unsubscribe, no more events should propogate
-    only1.unsubscribe()
-    t.notOk(~event.getConsumers().indexOf(only1.upstreamConsumer), 'unsubscribe removes consumer from upstream event')
+    // after destroy, no more events should propogate
+    only1.destroy()
+    t.notOk(~event.getConsumers().indexOf(only1.upstreamConsumer), 'destroy removes consumer from upstream event')
     event.produce(1)
     event.produce(1)
 
