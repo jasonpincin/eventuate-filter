@@ -3,13 +3,12 @@ var test      = require('tape'),
     filter    = require('..')
 
 test('eventuate filter', function (t) {
-    t.plan(11)
+    t.plan(12)
 
     var event = eventuate()
     var only1 = filter(event, function (v) { return v === 1 })
 
-    t.ok(~event.getConsumers().indexOf(only1.upstreamConsumer), 'adds consumer to upstream event')
-
+    t.notOk(event.hasConsumer(only1.upstreamConsumer), 'does not immediately add consumer to upstream event')
     t.ok(only1.consumerAdded, 'has consumerAdded')
     t.ok(only1.consumerRemoved, 'has consumerRemoved')
     t.ok(only1.hasConsumer() !== undefined, 'has hasConsumer')
@@ -25,6 +24,7 @@ test('eventuate filter', function (t) {
         only1Count++
     })
 
+    t.ok(event.hasConsumer(only1.upstreamConsumer), 'lazily adds consumer to upstream event')
     t.true(only1.hasConsumer(), 'registers consumers')
 
     event.produce(2)
@@ -42,5 +42,20 @@ test('eventuate filter', function (t) {
 
     t.equal(eventCount, 8, 'produce 6 events')
     t.equal(only1Count, 3, 'should filter out non matching events')
+})
 
+test('removed upstream consumer when destroyed', function (t) {
+    t.plan(2)
+
+    var event = eventuate()
+    var oddEvents = filter(event, odd)
+
+    oddEvents(function () {})
+    t.ok(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer in upstream')
+    oddEvents.removeAllConsumers()
+    t.notOk(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer NOT in upstream')
+
+    function odd (x) {
+        return x % 2 === 1
+    }
 })
