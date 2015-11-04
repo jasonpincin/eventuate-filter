@@ -26,7 +26,9 @@
     "url": "http://jason.pincin.com/"
   },
   "contributors": [],
-  "dependencies": {},
+  "dependencies": {
+    "call-hook": "~2.0.0"
+  },
   "devDependencies": {
     "@jasonpincin/standard": "~5.0.0-8",
     "es5-shim": "~4.1.15",
