@@ -4,14 +4,14 @@ node_js:
 - '0.10'
 - '0.12'
 - '4.0'
+- '5.0'
 before_install:
 - npm install -g npm@'>=2.9.1'
 before_script:
 - npm install -g coveralls@2.10.0
 script:
-- make travis-test
-- '[ "${TRAVIS_NODE_VERSION}" = "0.12" ] && travis_retry travis_wait make browser-test
-  || true'
+- npm run -s travis-test
+- '[ "${TRAVIS_NODE_VERSION}" = "0.12" ] && travis_retry travis_wait npm run -s travis-browser-test || true'
 env:
   global:
   - secure: i749Atiz/0VSIuNPGHvbc6rQOytc7InVGaBrnOHUyIowi3/fgqz8rGSYBvW1SQszZ+aZ7ocu2lQGkyFwfAgpK3Ou3HpYznq9cPGmrOVQGpx3IWOiYpfjg4dGxPNfUaIJ5choeWoHiaV5ukW1Sp2lJBDyhLmVpsGtmk/NoS4H3xs=
