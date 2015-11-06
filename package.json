@@ -27,7 +27,7 @@
   },
   "contributors": [],
   "dependencies": {
-    "call-hook": "~2.0.0",
+    "call-hook": "~2.1.0",
     "is-promise": "~2.1.0",
     "on-error": "~2.1.0"
   },
