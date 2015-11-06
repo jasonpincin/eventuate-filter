@@ -119,6 +119,22 @@ test('removed upstream consumer when destroyed', function (t) {
     }
 })
 
+test('supports destroyResidual option', function (t) {
+    t.plan(2)
+
+    var event = eventuate()
+    var oddEvents = filter(event, { destroyResidual: false }, odd)
+
+    oddEvents(function () {})
+    t.ok(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer in upstream')
+    oddEvents.removeAllConsumers()
+    t.ok(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer still in upstream')
+
+    function odd (x) {
+        return x % 2 === 1
+    }
+})
+
 test('accepts async filter', function (t) {
     t.plan(2)
 

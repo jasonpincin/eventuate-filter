@@ -4,9 +4,11 @@ var pre       = require('call-hook/pre'),
 
 module.exports = function mkFilteredEventuate (eventuate, options, filter) {
     filter = arguments.length > 2 ? filter : options
-    options = arguments.length > 2 ? options : {}
+    options = arguments.length > 2 ? options : undefined
 
-    options.lazy = typeof options.lazy !== 'undefined' ? options.lazy : true
+    options = options || {}
+    options.destroyResidual = options.destroyResidual !== undefined ? options.destroyResidual : true
+    options.lazy = options.lazy !== undefined ? options.lazy : true
 
     var consuming = false
 
