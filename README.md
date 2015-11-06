@@ -10,79 +10,100 @@ Create filtered [eventuate](https://github.com/jasonpincin/eventuate), acting as
 ## example
 
 ```javascript
-var eventuate = require('eventuate'),
+var eventuate = require('eventuate-core'),
     filter    = require('eventuate-filter')
 
-var pie = eventuate()
-pie(function (p) {
-    console.log('%s served...', p.type)
+var logMessage = eventuate()
+var errorMessage = filter(logMessage, function (log) {
+    return log.level === 'error'
 })
 
-var shoofly = filter(pie, function (pie) {
-    return pie.type === 'shoofly'
-})
-shoofly(function (p) {
-    console.log('Love %s pie', p.type)
+errorMessage(function (log) {
+    console.error(log.message)
 })
 
-var everythingElse = filter(pie, function (pie) {
-    return pie.type !== 'shoofly'
-})
-everythingElse(function (p) {
-    console.log('Don\'t care for %s pie', p.type)
-})
+logMessage.produce({ level: 'info', message: 'something happened' })
+logMessage.produce({ level: 'error', message: 'something bad happened' })
+logMessage.produce({ level: 'info', message: 'something else happened' })
 
-pie.produce({type: 'apple' })
-pie.produce({type: 'cherry' })
-pie.produce({type: 'shoofly' })
-pie.produce({type: 'peach' })
+// output:
+// something bad happened
 ```
 
 ## api
 
 ```javascript
-var eventuate = require('eventuate')
+var eventuate = require('eventuate-core')
 var filter    = require('eventuate-filter')
 
 var upstreamEventuate = eventuate()
 ```
 
-### var filteredEventuate = filter(upstreamEventuate, filterFunc)
+The API of the `filteredEventuate` is mostly identical to the `eventuate` it 
+is filtering. 
 
-Returns a new eventuate which re-produces events from eventuate `upstreamEventuate` for which `filterFunc` returns true.  `filterFunc` should have the signature `function (data) { }`. This function receives all event data from `upstreamEventuate` and must return a truthy or falsey value.
+### var filteredEventuate = filter(upstreamEventuate, options, filterFunc)
 
-If `upstreamEventuate` is an unmonitored eventuate, `filteredEventuate` will return an unmonitored eventuate.
+Returns a new eventuate, `filteredEventuate`, which re-produces events from 
+`upstreamEventuate` for which `filterFunc` returns or resolves to `true`. 
 
-### filteredEventuate.unsubscribe()
+Valid options are:
+* `requireConsumption` (default: `false`) - throw an error if a produced event is not consumed
+* `destroyResidual` (default: `true`) - call the destroy function when the last
+  consumer is removed via `removeConsumer` or `removeAllConsumers` (after at
+  least one consumer was added)
+* `lazy` (default: `true`) - wait until a consumer is added before consuming
+  from the `upstreamEventuate`. If set to `false`, `filteredEventuate` will
+  begin consuming/producing immediately.
 
-Stop consuming events from `upstreamEventuate` (and thus stop producing events). 
+The `filterFunc` function should accept at least one argument, `data`, but may
+optionally accept a 2nd argument of a `callback`; `eventuate-filter` will
+determine whether a callback is accepted based on the argument `length` of the
+`filterFunc` function. 
+
+If a callback is NOT accepted, then `filterFunc` should return either a `boolean` 
+or a `Promise`. If a `Promise` is returned, it should resolve to a `boolean`. If
+a callback is accepted, the return value of `filterFunc` is ignored, and the
+error-first style callback (`function (err, bool) {}`) must be called with
+either a truthy `error` or a falsey `error` and a `boolean`. 
+
+Upon receiving a `truthy` boolean from either a return value, Promise, or
+callback, the `filteredEventuate` will produce the `data` in question.
+
+If either the `callback` is supplied an `error`, or the `Promise` is `rejected`,
+then the `filteredEventuate` will produce an `Error` object.
+
+### filteredEventuate.destroy()
+
+When destroyed, the `filteredEventuate` will stop consuming from the
+`upstreamEventuate`. The `filteredEventuate` is automatically destroyed unless
+the `destroyResidual` option was given as `false` during creation of the
+`filteredEventuate`.
 
 ### filteredEventuate.upstreamConsumer
 
-The function added as a consumer to the `upstreamEventuate`. Example:
+The function added as a consumer to the `upstreamEventuate`.
 
-```javascript
-var consumerIdx = upstreamEventuate.consumers.indexOf(filteredEventuate.upstreamConsumer)
-assert(consumerIdx >= 0)
+## install
+
+With [npm](https://npmjs.org) do:
+
+```
+npm install --save eventuate-core
 ```
 
 ## testing
 
-`npm test [--dot | --spec] [--phantom] [--grep=pattern]`
+`npm test`
 
-Specifying `--dot` or `--spec` will change the output from the default TAP style. 
-Specifying `--phantom` will cause the tests to run in the headless phantom browser instead of node.
-Specifying `--grep` will only run the test files that match the given pattern.
-
-### browser test
-
-`npm run browser-test`
-
-This will run the tests in all browsers (specified in .zuul.yml). Be sure to [educate zuul](https://github.com/defunctzombie/zuul/wiki/cloud-testing#2-educate-zuul) first.
+Or to run tests in phantom: `npm run phantom`
 
 ### coverage
 
-`npm run coverage [--html]`
+`npm run view-cover`
 
-This will output a textual coverage report. Including `--html` will also open 
-an HTML coverage report in the default browser.
+This will output a textual coverage report.
+
+`npm run open-cover`
+
+This will open an HTML coverage report in the default browser.
