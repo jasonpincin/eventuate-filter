@@ -17,15 +17,28 @@ test('accepts options', function (t) {
     }, EventuateUnconsumedError)
 })
 
-test('eventuate filter lazily consumes by default', function (t) {
+test('eventuate filter lazily produces', function (t) {
+    t.plan(1)
+
+    var event = eventuate()
+    var only1 = filter(event, function (v) {
+        t.fail('filter should not execute with no consumers')
+    })
+
+    t.ok(event.hasConsumer(only1.upstreamConsumer), 'adds consumer to upstream eventuate')
+    event.produce(123)
+})
+
+test('eventuate filter eagerly produces with lazy = false', function (t) {
     t.plan(2)
 
     var event = eventuate()
-    var only1 = filter(event, function (v) { return v === 1 })
+    var only1 = filter(event, { lazy: false }, function (v) {
+        t.pass('filter should execute with no consumers if lazy = false')
+    })
 
-    t.notOk(event.hasConsumer(only1.upstreamConsumer), 'does not immediately add consumer to upstream event')
-    only1(function () {})
-    t.ok(event.hasConsumer(only1.upstreamConsumer), 'lazily adds consumer to upstream event')
+    t.ok(event.hasConsumer(only1.upstreamConsumer), 'adds consumer to upstream eventuate')
+    event.produce(123)
 })
 
 test('has no consumer initially', function (t) {
@@ -88,20 +101,20 @@ test('events do not propogate after destroyed', function (t) {
     t.equal(only1Count, 0)
 })
 
-test('does not lazily consume after being destroyed', function (t) {
-    t.plan(2)
-
-    var event = eventuate()
-    var oddEvents = filter(event, odd)
-    t.notOk(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer NOT in upstream')
-    oddEvents.destroy()
-    oddEvents(function () {})
-    t.notOk(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer NOT in upstream')
-
-    function odd (x) {
-        return x % 2 === 1
-    }
-})
+// test('does not lazily consume after being destroyed', function (t) {
+//     t.plan(2)
+//
+//     var event = eventuate()
+//     var oddEvents = filter(event, odd)
+//     t.notOk(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer NOT in upstream')
+//     oddEvents.destroy()
+//     oddEvents(function () {})
+//     t.notOk(event.hasConsumer(oddEvents.upstreamConsumer), 'consumer NOT in upstream')
+//
+//     function odd (x) {
+//         return x % 2 === 1
+//     }
+// })
 
 test('removed upstream consumer when destroyed', function (t) {
     t.plan(2)
@@ -228,4 +241,22 @@ test('promise errors are produced', function (t) {
             }, 50)
         })
     }
+})
+
+test('should be destroyed with upstream', function (t) {
+    t.plan(1)
+
+    var event = eventuate()
+    var fEvent = filter(event, function () {})
+    event.destroy()
+    t.ok(fEvent.isDestroyed())
+})
+
+test('should outlast upstream if destroyWithUpstream = false', function (t) {
+    t.plan(1)
+
+    var event = eventuate()
+    var fEvent = filter(event, { destroyRemoved: false }, function () {})
+    event.destroy()
+    t.notOk(fEvent.isDestroyed())
 })

@@ -8,19 +8,21 @@ module.exports = function mkFilteredEventuate (eventuate, options, filter) {
 
     options = options || {}
     options.destroyResidual = options.destroyResidual !== undefined ? options.destroyResidual : true
+    options.destroyRemoved = options.destroyRemoved !== undefined ? options.destroyRemoved : true
     options.lazy = options.lazy !== undefined ? options.lazy : true
-
-    var consuming = false
 
     var filteredEventuate              = eventuate.factory(options)
     filteredEventuate.upstreamConsumer = upstreamConsumer
-    filteredEventuate.consume          = pre(filteredEventuate.consume, addUpstreamConsumer)
     filteredEventuate.destroy          = pre(filteredEventuate.destroy, removeUpstreamConsumer)
 
-    if (!options.lazy) addUpstreamConsumer()
+    upstreamConsumer.removed = upstreamConsumerRemoved
+    eventuate.consume(upstreamConsumer)
+
     return filteredEventuate
 
     function upstreamConsumer (data) {
+        if (options.lazy && !filteredEventuate.hasConsumer()) return
+
         if (filter.length === 2) {
             filter(data, onError(produceError).otherwise(filterResult))
         }
@@ -35,13 +37,12 @@ module.exports = function mkFilteredEventuate (eventuate, options, filter) {
         }
     }
 
-    function produceError (err) {
-        filteredEventuate.produce(err instanceof Error ? err : new Error(err))
+    function upstreamConsumerRemoved () {
+        if (options.destroyRemoved) filteredEventuate.destroy()
     }
 
-    function addUpstreamConsumer () {
-        if (!consuming && !filteredEventuate.isDestroyed()) eventuate.consume(upstreamConsumer)
-        consuming = true
+    function produceError (err) {
+        filteredEventuate.produce(err instanceof Error ? err : new Error(err))
     }
 
     function removeUpstreamConsumer () {
