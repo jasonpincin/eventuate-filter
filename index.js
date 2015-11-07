@@ -3,13 +3,15 @@ var pre       = require('call-hook/pre'),
     onError   = require('on-error')
 
 module.exports = function mkFilteredEventuate (eventuate, options, filter) {
-    filter = arguments.length > 2 ? filter : options
-    options = arguments.length > 2 ? options : undefined
+    if (typeof options === 'function') {
+        filter  = options
+        options = undefined
+    }
 
-    options = options || {}
+    options                 = options || {}
     options.destroyResidual = options.destroyResidual !== undefined ? options.destroyResidual : true
-    options.destroyRemoved = options.destroyRemoved !== undefined ? options.destroyRemoved : true
-    options.lazy = options.lazy !== undefined ? options.lazy : true
+    options.destroyRemoved  = options.destroyRemoved !== undefined ? options.destroyRemoved : true
+    options.lazy            = options.lazy !== undefined ? options.lazy : true
 
     var filteredEventuate              = eventuate.factory(options)
     filteredEventuate.upstreamConsumer = upstreamConsumer
