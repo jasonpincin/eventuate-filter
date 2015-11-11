@@ -1,30 +1,35 @@
 var pre       = require('call-hook/pre'),
+    post      = require('call-hook/post'),
     isPromise = require('is-promise'),
     onError   = require('on-error')
 
-module.exports = function mkFilteredEventuate (eventuate, options, filter) {
+module.exports = function mkFilteredEventuate (upstreamEventuate, options, filter) {
     if (typeof options === 'function') {
         filter  = options
         options = undefined
     }
 
+    if (typeof upstreamEventuate.destroyed !== 'function')
+        throw new TypeError('eventuate-filter expects first argument to be a non-basic eventuate')
+
     options                 = options || {}
     options.destroyResidual = options.destroyResidual !== undefined ? options.destroyResidual : true
-    options.destroyRemoved  = options.destroyRemoved !== undefined ? options.destroyRemoved : true
     options.lazy            = options.lazy !== undefined ? options.lazy : true
 
-    var filteredEventuate              = eventuate.factory(options)
-    filteredEventuate.upstreamConsumer = upstreamConsumer
-    filteredEventuate.destroy          = pre(filteredEventuate.destroy, removeUpstreamConsumer)
+    var consuming = false
 
+    var eventuate              = upstreamEventuate.factory(options)
+    eventuate.upstreamConsumer = upstreamConsumer
+    eventuate.consume          = pre(eventuate.consume, addUpstreamConsumer)
+    eventuate.destroy          = post(eventuate.destroy, removeUpstreamConsumer)
+
+    upstreamEventuate.destroyed(eventuate.destroy)
     upstreamConsumer.removed = upstreamConsumerRemoved
-    eventuate.consume(upstreamConsumer)
+    if (!options.lazy) addUpstreamConsumer()
 
-    return filteredEventuate
+    return eventuate
 
     function upstreamConsumer (data) {
-        if (options.lazy && !filteredEventuate.hasConsumer()) return
-
         if (filter.length === 2) {
             filter(data, onError(produceError).otherwise(filterResult))
         }
@@ -35,19 +40,28 @@ module.exports = function mkFilteredEventuate (eventuate, options, filter) {
         }
 
         function filterResult (bool) {
-            if (bool) filteredEventuate.produce(data)
+            if (bool) eventuate.produce(data)
+        }
+    }
+
+    function addUpstreamConsumer () {
+        if (!consuming && !eventuate.isDestroyed()) {
+            upstreamEventuate.consume(upstreamConsumer)
+            consuming = true
         }
     }
 
     function upstreamConsumerRemoved () {
-        if (options.destroyRemoved) filteredEventuate.destroy()
-    }
-
-    function produceError (err) {
-        filteredEventuate.produce(err instanceof Error ? err : new Error(err))
+        consuming = false
+        if (!eventuate.isDestroyed() && !upstreamEventuate.isDestroyed())
+            addUpstreamConsumer()
     }
 
     function removeUpstreamConsumer () {
-        eventuate.removeConsumer(upstreamConsumer)
+        upstreamEventuate.removeConsumer(upstreamConsumer)
+    }
+
+    function produceError (err) {
+        eventuate.produce(err instanceof Error ? err : new Error(err))
     }
 }
