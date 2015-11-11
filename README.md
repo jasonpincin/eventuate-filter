@@ -52,14 +52,11 @@ Valid options are:
 * `destroyResidual` (default: `true`) - call the destroy function when the last
   consumer is removed via `removeConsumer` or `removeAllConsumers` (after at
   least one consumer was added)
-* `destroyRemoved` (default: `true`) - call the destroy function when the
-  upstream eventuate removes this eventuate's `upstreamConsumer`. This likely
-  means the upstream eventuate was destroyed, or `removeAllConsumers` was called
-  on it.
-* `lazy` (default: `true`) - wait until a consumer is added before executing
-  `filterFunc` and producing values. If set to `false`, will attempt to filter
-  and produce despite not having consumers. This is useful when used in
-  conjunction with `requireConsumption`.
+* `lazy` (default: `true`) - wait until a consumer is added before consuming
+  from `upstreamEventuate`. If set to `false`, will begin
+  consuming/filtering/producing immediately, even with no consumers added. This
+  is useful when used in conjunction with `requireConsumption`, for example.
+
 
 The `filterFunc` function should accept at least one argument, `data`, but may
 optionally accept a 2nd argument of a `callback`; `eventuate-filter` will
