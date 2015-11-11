@@ -1,26 +1,18 @@
-var eventuate = require('eventuate'),
+var eventuate = require('eventuate-core'),
     filter    = require('..')
 
-var pie = eventuate()
-pie(function (p) {
-    console.log('%s served...', p.type)
+var logMessage = eventuate()
+var errorMessage = filter(logMessage, function (log) {
+    return log.level === 'error'
 })
 
-var shoofly = filter(pie, function (p) {
-    return p.type === 'shoofly'
-})
-shoofly(function (p) {
-    console.log('Love %s pie', p.type)
+errorMessage(function (log) {
+    console.error(log.message)
 })
 
-var everythingElse = filter(pie, function (p) {
-    return p.type !== 'shoofly'
-})
-everythingElse(function (p) {
-    console.log('Don\'t care for %s pie', p.type)
-})
+logMessage.produce({ level: 'info', message: 'something happened' })
+logMessage.produce({ level: 'error', message: 'something bad happened' })
+logMessage.produce({ level: 'info', message: 'something else happened' })
 
-pie.produce({type: 'apple' })
-pie.produce({type: 'cherry' })
-pie.produce({type: 'shoofly' })
-pie.produce({type: 'peach' })
+// output:
+// something bad happened
