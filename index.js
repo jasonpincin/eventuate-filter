@@ -10,7 +10,7 @@ module.exports = function mkFilteredEventuate (upstreamEventuate, options, filte
     }
 
     if (typeof upstreamEventuate.destroyed !== 'function')
-        throw new TypeError('eventuate-filter expects first argument to be a non-basic eventuate')
+        throw new TypeError('first argument should be a non-basic eventuate')
 
     options                 = options || {}
     options.destroyResidual = options.destroyResidual !== undefined ? options.destroyResidual : true
