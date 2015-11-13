@@ -5,7 +5,13 @@
 [![Coverage Status](https://coveralls.io/repos/jasonpincin/eventuate-filter/badge.png?branch=master)](https://coveralls.io/r/jasonpincin/eventuate-filter?branch=master)
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/jp-project9.svg)](https://saucelabs.com/u/jp-project9)
 
-Create filtered [eventuate](https://github.com/jasonpincin/eventuate), acting as subset of broader eventuate
+Create an eventuate that re-produces a subset of events from another eventuate.
+
+This tiny module is also part of the larger aggregate module: 
+[eventuate](https://github.com/jasonpincin/eventuate)
+
+This module may also be used stand-alone, with 
+[eventuate-core](https://github.com/jasonpincin/eventuate-core).
 
 ## example
 
@@ -45,7 +51,8 @@ is filtering.
 ### var filteredEventuate = filter(upstreamEventuate, options, filterFunc)
 
 Returns a new eventuate, `filteredEventuate`, which re-produces events from 
-`upstreamEventuate` for which `filterFunc` returns or resolves to `true`. 
+a non-basic eventuate, `upstreamEventuate`, for which `filterFunc` returns or 
+resolves to `true`. 
 
 Valid options are:
 * `requireConsumption` (default: `false`) - throw an error if a produced event is not consumed
