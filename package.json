@@ -27,15 +27,14 @@
   },
   "contributors": [],
   "dependencies": {
-    "call-hook": "~2.1.0",
+    "eventuate-chainable": "~1.0.0",
     "is-promise": "~2.1.0",
     "on-error": "~2.1.0"
   },
   "devDependencies": {
     "@jasonpincin/standard": "~5.0.0-8",
-    "es5-shim": "~4.1.15",
-    "eventuate-core": "~3.0.0",
-    "eventuate-once": "~1.1.0",
+    "es5-shim": "~4.3.1",
+    "eventuate-core": "~4.0.1",
     "faucet": "0.0.1",
     "istanbul": "~0.4.0",
     "opn": "~1.0.2",
@@ -43,7 +42,7 @@
     "promise-polyfill": "~2.1.0",
     "snazzy": "~2.0.1",
     "tape": "~4.2.1",
-    "zuul": "~3.6.0"
+    "zuul": "~3.7.2"
   },
   "scripts": {
     "test": "npm run -s faucet && npm run -s lint && npm run -s check-cover",
