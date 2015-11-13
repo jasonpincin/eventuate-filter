@@ -127,3 +127,37 @@ test('promise errors are produced', { timeout: 1000 }, function (t) {
         })
     }
 })
+
+test('produced value after eventuate is destroyed does not throw an error', { timeout: 1000 }, function (t) {
+    t.plan(1)
+
+    var event = eventuate()
+    var chosenEvents = filter(event, everything)
+    var errEvents = filter(event, makeErr)
+
+    var callCount = 0
+    chosenEvents(function (data) {
+        callCount++
+    })
+    errEvents(function (data) {
+        callCount++
+    })
+    event.produce(42)
+    event.destroy()
+
+    setTimeout(function () {
+        t.equal(callCount, 0, 'call count is 0 and no errors thrown')
+    }, 100)
+
+    function everything (data, cb) {
+        setTimeout(function () {
+            cb(null, true)
+        }, 50)
+    }
+
+    function makeErr (data, cb) {
+        setTimeout(function () {
+            cb(new Error('boom'))
+        }, 50)
+    }
+})

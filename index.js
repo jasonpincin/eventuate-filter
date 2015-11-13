@@ -16,11 +16,12 @@ module.exports = chainable(function eventuateFilter (eventuate, options, filter)
         }
 
         function filterResult (bool) {
-            if (bool) eventuate.produce(data)
+            if (bool && !eventuate.isDestroyed()) eventuate.produce(data)
         }
     }
 
     function produceError (err) {
-        eventuate.produce(err instanceof Error ? err : new Error(err))
+        if (!eventuate.isDestroyed())
+            eventuate.produce(err instanceof Error ? err : new Error(err))
     }
 })

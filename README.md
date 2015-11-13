@@ -82,6 +82,9 @@ callback, the `filteredEventuate` will produce the `data` in question.
 If either the `callback` is supplied an `error`, or the `Promise` is `rejected`,
 then the `filteredEventuate` will produce an `Error` object.
 
+If the callback or Promise are resolved/rejected after the `filteredEventuate`
+has been destroyed, the value will not be produced.
+
 ### filteredEventuate.destroy()
 
 When destroyed, the `filteredEventuate` will stop consuming from the
