@@ -2,7 +2,7 @@ var chainable = require('eventuate-chainable'),
     isPromise = require('is-promise'),
     onError   = require('on-error')
 
-module.exports = chainable(function (eventuate, options, filter) {
+module.exports = chainable(function eventuateFilter (eventuate, options, filter) {
     return upstreamConsumer
 
     function upstreamConsumer (data) {
