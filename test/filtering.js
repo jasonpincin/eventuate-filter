@@ -3,7 +3,7 @@ var test                     = require('tape'),
     eventuate                = require('eventuate-core'),
     filter                   = require('..')
 
-test('eventuate filter syncronoysly filters data', function (t) {
+test('eventuate filter synchronously filters data', { timeout: 1000 }, function (t) {
     t.plan(6)
 
     var event = eventuate()
@@ -20,7 +20,7 @@ test('eventuate filter syncronoysly filters data', function (t) {
         only1Count++
     })
 
-    t.true(only1.hasConsumer(), 'registers consumers')
+    t.ok(only1.hasConsumer(), 'registers consumers')
 
     event.produce(2)
     event.produce(1)
@@ -33,7 +33,7 @@ test('eventuate filter syncronoysly filters data', function (t) {
     t.equal(only1Count, 3, 'should filter out non matching events')
 })
 
-test('accepts async filter', function (t) {
+test('accepts async filter', { timeout: 1000 }, function (t) {
     t.plan(2)
 
     var event = eventuate()
@@ -55,7 +55,7 @@ test('accepts async filter', function (t) {
     }
 })
 
-test('supports filter returning a promise ', function (t) {
+test('supports filter returning a promise ', { timeout: 1000 }, function (t) {
     t.plan(2)
 
     var event = eventuate()
@@ -79,7 +79,7 @@ test('supports filter returning a promise ', function (t) {
     }
 })
 
-test('callback errors are produced', function (t) {
+test('callback errors are produced', { timeout: 1000 }, function (t) {
     t.plan(4)
 
     var event = eventuate()
@@ -103,7 +103,7 @@ test('callback errors are produced', function (t) {
     }
 })
 
-test('promise errors are produced', function (t) {
+test('promise errors are produced', { timeout: 1000 }, function (t) {
     t.plan(4)
 
     var event = eventuate()
