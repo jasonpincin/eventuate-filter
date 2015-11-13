@@ -27,7 +27,7 @@
   },
   "contributors": [],
   "dependencies": {
-    "eventuate-chainable": "~1.0.0",
+    "eventuate-chainable": "~1.0.1",
     "is-promise": "~2.1.0",
     "on-error": "~2.1.0"
   },
