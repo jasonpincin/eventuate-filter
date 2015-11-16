@@ -27,12 +27,11 @@
   },
   "contributors": [],
   "dependencies": {
-    "eventuate-chainable": "~1.0.2",
-    "is-promise": "~2.1.0",
-    "on-error": "~2.1.0"
+    "eventuate-chainable": "~2.0.0",
+    "is-promise": "~2.1.0"
   },
   "devDependencies": {
-    "@jasonpincin/standard": "~5.0.0-8",
+    "@jasonpincin/standard": "~5.3.1-2",
     "es5-shim": "~4.3.1",
     "eventuate-core": "~4.0.2",
     "faucet": "0.0.1",

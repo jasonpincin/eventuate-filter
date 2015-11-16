@@ -1,27 +1,30 @@
-var chainable = require('eventuate-chainable'),
-    isPromise = require('is-promise'),
-    onError   = require('on-error')
+var
+  chainable = require('eventuate-chainable'),
+  isPromise = require('is-promise')
 
-module.exports = chainable(function eventuateFilter (eventuate, options, filter) {
-    return upstreamConsumer
+module.exports = chainable(function eventuateFilter (options, filter) {
+  return function forEachValue (data) {
+    var self = this
 
-    function upstreamConsumer (data) {
-        if (filter.length === 2) {
-            filter(data, onError(produceError).otherwise(filterResult))
-        }
-        else {
-            var result = filter(data)
-            if (isPromise(result)) result.then(filterResult, produceError)
-            else filterResult(result)
-        }
-
-        function filterResult (bool) {
-            if (bool && !eventuate.isDestroyed()) eventuate.produce(data)
-        }
+    if (filter.length === 2) filter(data, cb)
+    else {
+      var result = filter(data)
+      if (isPromise(result)) result.then(filterResult, error)
+      else filterResult(result)
     }
 
-    function produceError (err) {
-        if (!eventuate.isDestroyed())
-            eventuate.produce(err instanceof Error ? err : new Error(err))
+    function filterResult (bool) {
+      if (bool) self.produce(data)
+      self.finish()
     }
+
+    function error (err) {
+      self.error(err).finish()
+    }
+
+    function cb (err, bool) {
+      if (err) error(err)
+      else filterResult(bool)
+    }
+  }
 })
