@@ -63,7 +63,9 @@ Valid options are:
   from `upstreamEventuate`. If set to `false`, will begin
   consuming/filtering/producing immediately, even with no consumers added. This
   is useful when used in conjunction with `requireConsumption`, for example.
-
+* `order` (default: `false`) - insure the order of items output match the order
+  of input, even with an async filter. Be careful using this option, as it will
+  cause buffering. 
 
 The `filterFunc` function should accept at least one argument, `data`, but may
 optionally accept a 2nd argument of a `callback`; `eventuate-filter` will
