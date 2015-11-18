@@ -21,11 +21,11 @@ var eventuate = require('eventuate-core'),
 
 var logMessage = eventuate()
 var errorMessage = filter(logMessage, function (log) {
-    return log.level === 'error'
+  return log.level === 'error'
 })
 
 errorMessage(function (log) {
-    console.error(log.message)
+  console.error(log.message)
 })
 
 logMessage.produce({ level: 'info', message: 'something happened' })

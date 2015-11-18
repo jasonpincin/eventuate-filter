@@ -1,9 +1,8 @@
-var
-  test      = require('tape'),
-  Promise   = require('promise-polyfill'),
-  eventuate = require('eventuate-core'),
-  filter    = require('..'),
-  timeout   = { timeout: 1000 }
+var test      = require('tape'),
+    Promise   = require('promise-polyfill'),
+    eventuate = require('eventuate-core'),
+    filter    = require('..'),
+    timeout   = { timeout: 1000 }
 
 test('eventuate filter synchronously filters data', timeout, function (t) {
   t.plan(6)

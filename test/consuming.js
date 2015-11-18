@@ -1,7 +1,6 @@
-var
-  test      = require('tape'),
-  eventuate = require('eventuate-core'),
-  filter    = require('..')
+var test      = require('tape'),
+    eventuate = require('eventuate-core'),
+    filter    = require('..')
 
 test('eventuate filter lazily consumes', function (t) {
   t.plan(2)

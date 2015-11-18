@@ -1,7 +1,6 @@
-var
-  test      = require('tape'),
-  eventuate = require('eventuate-core'),
-  filter    = require('..')
+var test      = require('tape'),
+    eventuate = require('eventuate-core'),
+    filter    = require('..')
 
 test('events do not propogate after destroyed', function (t) {
   t.plan(2)
@@ -27,10 +26,9 @@ test('events do not propogate after destroyed', function (t) {
 test('does not lazily consume after being destroyed', function (t) {
   t.plan(2)
 
-  var
-    event            = eventuate(),
-    oddEvents        = filter(event, odd),
-    upstreamConsumer = oddEvents.upstreamConsumer
+  var event            = eventuate(),
+      oddEvents        = filter(event, odd),
+      upstreamConsumer = oddEvents.upstreamConsumer
   t.notOk(event.hasConsumer(upstreamConsumer), 'consumer NOT in upstream')
   oddEvents.destroy()
   oddEvents(function () {})
@@ -44,10 +42,9 @@ test('does not lazily consume after being destroyed', function (t) {
 test('removed upstream consumer when destroyed', function (t) {
   t.plan(2)
 
-  var
-    event            = eventuate(),
-    oddEvents        = filter(event, odd),
-    upstreamConsumer = oddEvents.upstreamConsumer
+  var event            = eventuate(),
+      oddEvents        = filter(event, odd),
+      upstreamConsumer = oddEvents.upstreamConsumer
 
   oddEvents(function () {})
   t.ok(event.hasConsumer(upstreamConsumer), 'consumer in upstream')
@@ -62,10 +59,9 @@ test('removed upstream consumer when destroyed', function (t) {
 test('supports destroyResidual option', function (t) {
   t.plan(2)
 
-  var
-    event            = eventuate(),
-    oddEvents        = filter(event, { destroyResidual: false }, odd),
-    upstreamConsumer = oddEvents.upstreamConsumer
+  var event            = eventuate(),
+      oddEvents        = filter(event, { destroyResidual: false }, odd),
+      upstreamConsumer = oddEvents.upstreamConsumer
 
   oddEvents(function () {})
   t.ok(event.hasConsumer(upstreamConsumer), 'consumer in upstream')

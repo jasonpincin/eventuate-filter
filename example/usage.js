@@ -1,6 +1,5 @@
-var
-  eventuate = require('eventuate-core'),
-  filter    = require('..')
+var eventuate = require('eventuate-core'),
+    filter    = require('..')
 
 var logMessage = eventuate()
 var errorMessage = filter(logMessage, function (log) {

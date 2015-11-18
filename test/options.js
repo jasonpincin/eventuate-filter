@@ -1,9 +1,8 @@
-var
-  test                     = require('tape'),
-  eventuate                = require('eventuate-core'),
-  errors                   = require('eventuate-core/errors'),
-  EventuateUnconsumedError = errors.EventuateUnconsumedError,
-  filter                   = require('..')
+var test                     = require('tape'),
+    eventuate                = require('eventuate-core'),
+    errors                   = require('eventuate-core/errors'),
+    EventuateUnconsumedError = errors.EventuateUnconsumedError,
+    filter                   = require('..')
 
 test('accepts lazy and requireConsumption options', function (t) {
   t.plan(1)

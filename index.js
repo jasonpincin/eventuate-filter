@@ -1,6 +1,5 @@
-var
-  chainable = require('eventuate-chainable'),
-  isPromise = require('is-promise')
+var chainable = require('eventuate-chainable'),
+    isPromise = require('is-promise')
 
 module.exports = chainable(function eventuateFilter (options, filter) {
   return function forEachValue (data) {
