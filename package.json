@@ -28,7 +28,8 @@
   "contributors": [],
   "dependencies": {
     "eventuate-chainable": "~2.0.0",
-    "is-promise": "~2.1.0"
+    "is-promise": "~2.1.0",
+    "object-assign": "~4.0.1"
   },
   "devDependencies": {
     "@jasonpincin/standard": "~5.3.1-3",

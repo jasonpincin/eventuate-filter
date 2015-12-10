@@ -1,29 +1,15 @@
-var chainable = require('eventuate-chainable'),
-    isPromise = require('is-promise')
+var assign    = require('object-assign'),
+    chainable = require('eventuate-chainable/mixin'),
+    reproduce = require('./lib/reproduce')
 
-module.exports = chainable(function eventuateFilter (options, filter) {
-  return function forEachValue (data) {
-    var self = this
-
-    if (filter.length === 2) filter(data, cb)
-    else {
-      var result = filter(data)
-      if (isPromise(result)) result.then(filterResult, error)
-      else filterResult(result)
-    }
-
-    function filterResult (bool) {
-      if (bool) self.produce(data)
-      self.finish()
-    }
-
-    function error (err) {
-      self.error(err).finish()
-    }
-
-    function cb (err, bool) {
-      if (err) error(err)
-      else filterResult(bool)
-    }
+module.exports = eventuateFilter
+function eventuateFilter (upstream, options, filter) {
+  if (typeof options === 'function') {
+    filter = options
+    options = undefined
   }
-})
+
+  var eventuate = assign(upstream.factory(options), chainable.properties)
+  chainable.call(eventuate, upstream, options, reproduce(filter))
+  return eventuate
+}
