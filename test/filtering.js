@@ -1,13 +1,13 @@
-var test            = require('tape'),
-    eventuate       = require('eventuate-core'),
-    EventuateFilter = require('../create-constructor')(eventuate.mixin),
-    timeout         = { timeout: 1000 }
+var test      = require('tape'),
+    eventuate = require('eventuate-core'),
+    filter    = require('..')(eventuate),
+    timeout   = { timeout: 1000 }
 
 test('provides constructor generation', timeout, function (t) {
   t.plan(6)
 
   var event = eventuate()
-  var only1 = new EventuateFilter(event, function (v) { return v === 1 })
+  var only1 = filter(event, function (v) { return v === 1 })
 
   var eventCount = 0
   event(function () {
@@ -37,7 +37,7 @@ test('constructor factory accepts options', timeout, function (t) {
   t.plan(1)
 
   var event = eventuate()
-  var only1 = new EventuateFilter(event, {
+  var only1 = filter(event, {
     lazy: false
   }, function (v) { return v === 1 })
 
