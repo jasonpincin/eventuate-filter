@@ -1,15 +1,13 @@
-var assign    = require('object-assign'),
-    chainable = require('eventuate-chainable/mixin'),
-    reproduce = require('./lib/reproduce')
+var chainable       = require('eventuate-chainable'),
+    producerFactory = require('./lib/producer-factory')
 
-module.exports = eventuateFilter
-function eventuateFilter (upstream, options, filter) {
-  if (typeof options === 'function') {
-    filter = options
-    options = undefined
+module.exports = eventuateFilterFactory
+function eventuateFilterFactory (Super) {
+  var EventuateFilter = chainable(Super, producerFactory)
+
+  function eventuateFilter (upstream, options, filter) {
+    return new EventuateFilter(upstream, options, filter)
   }
-
-  var eventuate = assign(upstream.factory(options), chainable.properties)
-  chainable.call(eventuate, upstream, options, reproduce(filter))
-  return eventuate
+  eventuateFilter.constructor = EventuateFilter
+  return eventuateFilter
 }
