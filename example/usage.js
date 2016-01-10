@@ -1,12 +1,12 @@
 var eventuate = require('eventuate-core'),
-    filter    = require('..')
+    filter    = require('..')(eventuate)
 
 var logMessage = eventuate()
 var errorMessage = filter(logMessage, function (log) {
   return log.level === 'error'
 })
 
-errorMessage(function (log) {
+errorMessage.consume(function (log) {
   console.error(log.message)
 })
 
